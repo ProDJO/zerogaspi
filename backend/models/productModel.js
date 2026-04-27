@@ -1,10 +1,10 @@
 const pool = require("../db");
 
 // CREATE PRODUCT
-const createProduct = async (name, description, price, quantity) => {
+const createProduct = async (name, description, price, quantity,image) => {
   const result = await pool.query(
-    "INSERT INTO products (name, description, price, quantity) VALUES ($1, $2, $3, $4) RETURNING *",
-    [name, description, price, quantity]
+    "INSERT INTO products (name, description, price, quantity,image) VALUES ($1, $2, $3, $4, $5) RETURNING *",
+    [name, description, price, quantity,image]
   );
   return result.rows[0];
 };
