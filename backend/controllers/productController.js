@@ -3,6 +3,10 @@ const productModel = require("../models/productModel");
 // CREATE PRODUCT
 const createProduct = async (req, res) => {
   try {
+    // DEBUG
+    console.log("BODY:", req.body);
+    console.log("FILE:", req.file);
+
     const { name, description, price, quantity } = req.body;
 
     if (!name && !price) {
@@ -15,7 +19,7 @@ const createProduct = async (req, res) => {
       return res.status(400).send("Price is required");
     }
 
-    //récupérer l'image 
+    // récupérer l'image 
     const image = req.file ? req.file.filename : null;
 
     const product = await productModel.createProduct(
@@ -43,7 +47,7 @@ const getProducts = async (req, res) => {
     products.forEach(p => {
       p.price = p.price + " DT";
 
-      //ajouter URL complète de l’image
+      // ajouter URL complète de l’image
       if (p.image) {
         p.image = `http://localhost:5000/uploads/${p.image}`;
       }
