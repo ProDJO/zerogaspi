@@ -11,4 +11,6 @@ router.post("/",authMiddleware, adminMiddleware, upload.single("image"), product
 // GET ALL PRODUCTS (public)
 router.get("/", productController.getProducts);
 
+console.log("PRODUCT ROUTES LOADED");
+
 module.exports = router;
