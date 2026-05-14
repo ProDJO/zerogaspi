@@ -59,8 +59,26 @@ const getProducts = async (req, res) => {
     res.status(500).send("Erreur serveur");
   }
 };
+// DELETE PRODUCT
+const deleteProduct = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const product = await productModel.deleteProduct(id);
+
+    if (!product) {
+      return res.status(404).send("Produit non trouvé");
+    }
+
+    res.json({ message: "Produit supprimé", product });
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send("Erreur serveur");
+  }
+};
 
 module.exports = {
   createProduct,
   getProducts,
+  deleteProduct, 
 };
