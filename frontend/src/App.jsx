@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useAuth } from "./useAuth";
 import MesReservations from "./MesReservations";
+import AdminDashboard from "./AdminDashboard";
 
 function App() {
   const { token, user, login, logout } = useAuth();
@@ -117,10 +118,23 @@ function App() {
         ))}
       </div>
 
-      {/* Mes réservations — visible uniquement si connecté */}
+      {/* Mes réservations */}
       {token && <MesReservations token={token} />}
 
-    </div>
+      {/* ✅ Dashboard Admin */}
+      {token && user.role === "admin" && (
+        <AdminDashboard
+          token={token}
+          products={products}
+          onProductAdded={() => {
+            fetch("http://localhost:5000/products")
+              .then(res => res.json())
+              .then(data => setProducts(data));
+          }}
+        />
+      )}
+
+    </div>  
   );
 }
 
