@@ -1,8 +1,10 @@
+import AdminDashboard from "../AdminDashboard.jsx";
+
 function AdminPage() {
   return (
     <div>
       <h1>🛠️ Dashboard Administrateur</h1>
-      <p>Le dashboard admin arrivera ici.</p>
+      <AdminDashboard />
     </div>
   );
 }
