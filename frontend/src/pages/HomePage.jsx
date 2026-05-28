@@ -50,7 +50,6 @@ function HomePage() {
       await res.json();
       setMessage(`✅ Réservation confirmée pour le produit #${productId}`);
 
-      // Recharger la liste pour voir le stock à jour
       fetchProducts();
     } catch (err) {
       setMessage(`❌ Erreur : ${err.message}`);
@@ -89,14 +88,25 @@ function HomePage() {
             <div key={p.id} style={cardStyle}>
               {p.image && (
                 <img
-                  src={`http://localhost:5000${p.image}`}
+                  src={p.image}
                   alt={p.name}
-                  style={{ width: "100%", borderRadius: "5px" }}
+                  style={{
+                    width: "100%",
+                    height: "200px",
+                    objectFit: "cover",
+                    borderRadius: "5px"
+                  }}
+                  onError={(e) => {
+                    console.log("❌ Image cassée :", p.image);
+                    e.target.onerror = null;
+                    e.target.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 300 200'><rect fill='%23f0f0f0' width='300' height='200'/><text x='150' y='100' text-anchor='middle' font-family='Arial' font-size='14' fill='%23999'>Image non disponible</text></svg>";
+                  }}
                 />
               )}
               <h3>{p.name}</h3>
-              <p>Prix : {p.price} DT</p>
-              <p>Stock : {p.quantity}</p>
+              <p>{p.description}</p>
+              <p><strong>Prix :</strong> {p.price} </p>
+              <p><strong>Stock :</strong> {p.quantity}</p>
 
               <button
                 onClick={() => handleReserve(p.id)}
