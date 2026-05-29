@@ -28,8 +28,63 @@ const getUserByEmail = async (email) => {
   return result.rows[0];
 };
 
+// GET USER BY ID (sans le mot de passe)
+const getUserById = async (id) => {
+  const result = await pool.query(
+    "SELECT id, name, email, role, pending_role, pending_role_status FROM users WHERE id = $1",
+    [id]
+  );
+  return result.rows[0];
+};
+
+// UPDATE PENDING ROLE (demande de rôle vendeur/livreur)
+const updatePendingRole = async (id, pending_role, pending_role_status) => {
+  const result = await pool.query(
+    "UPDATE users SET pending_role = $1, pending_role_status = $2 WHERE id = $3 RETURNING id, name, email, role, pending_role, pending_role_status",
+    [pending_role, pending_role_status, id]
+  );
+  return result.rows[0];
+};
+
+// GET PENDING ROLE REQUESTS — pour l'admin
+const getPendingRoleRequests = async () => {
+  const result = await pool.query(
+    "SELECT id, name, email, role, pending_role, pending_role_status FROM users WHERE pending_role_status = 'pending'"
+  );
+  return result.rows;
+};
+
+// APPROVE ROLE — l'admin accepte la demande
+const approveRole = async (id) => {
+  const result = await pool.query(
+    `UPDATE users
+     SET role = pending_role, pending_role = NULL, pending_role_status = 'approved'
+     WHERE id = $1
+     RETURNING id, name, email, role, pending_role, pending_role_status`,
+    [id]
+  );
+  return result.rows[0];
+};
+
+// REJECT ROLE — l'admin refuse la demande
+const rejectRole = async (id) => {
+  const result = await pool.query(
+    `UPDATE users
+     SET pending_role = NULL, pending_role_status = 'rejected'
+     WHERE id = $1
+     RETURNING id, name, email, role, pending_role, pending_role_status`,
+    [id]
+  );
+  return result.rows[0];
+};
+
 module.exports = {
   createUser,
   getUsers,
-  getUserByEmail
+  getUserByEmail,
+  getUserById,
+  updatePendingRole,
+  getPendingRoleRequests,
+  approveRole,
+  rejectRole,
 };
