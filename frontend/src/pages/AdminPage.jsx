@@ -1,12 +1,5 @@
-import AdminDashboard from "../AdminDashboard.jsx";
+import BackofficeLayout from "../BackofficeLayout.jsx";
 
-function AdminPage() {
-  return (
-    <div>
-      <h1>🛠️ Dashboard Administrateur</h1>
-      <AdminDashboard />
-    </div>
-  );
+export default function AdminPage() {
+  return <BackofficeLayout />;
 }
-
-export default AdminPage;

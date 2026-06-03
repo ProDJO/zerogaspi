@@ -1,0 +1,13 @@
+{
+  "name": "ZeroGaspi — Anti-gaspillage alimentaire",
+  "short_name": "ZeroGaspi",
+  "description": "Achetez des produits alimentaires à prix réduit et luttez contre le gaspillage.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#f9fafb",
+  "theme_color": "#16a34a",
+  "lang": "fr",
+  "icons": [
+    { "src": "/favicon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" }
+  ]
+}

@@ -1,5 +1,7 @@
 const reservationModel = require("../models/reservationModel");
 const productModel = require("../models/productModel");
+const userModel    = require("../models/userModel");
+const mailer       = require("../utils/mailer");
 
 // réserver un produit
 const reserveProduct = async (req, res) => {
@@ -37,6 +39,18 @@ const reserveProduct = async (req, res) => {
       product.quantity - quantity
     );
 
+    // Email de confirmation (fire-and-forget)
+    const client = await userModel.getMe(user_id);
+    if (client?.email) {
+      const tpl = mailer.orderConfirmation({
+        clientName:  client.name,
+        productName: product.name,
+        quantity,
+        total:       quantity * parseFloat(product.price),
+      });
+      mailer.sendMail({ to: client.email, ...tpl });
+    }
+
     res.json({
       message: "Reservation successful",
       reservation,
@@ -57,6 +71,11 @@ const cancelReservation = async (req, res) => {
 
     if (!reservation) {
       return res.status(404).send("Reservation not found");
+    }
+
+    // Vérifier que l'utilisateur est le propriétaire de la réservation (ou admin)
+    if (reservation.user_id !== req.user.id && req.user.role !== "admin") {
+      return res.status(403).send("Accès refusé : cette réservation ne vous appartient pas");
     }
 
     // récupérer le produit lié
@@ -93,8 +112,20 @@ const getMyReservations = async (req, res) => {
   }
 };
 
+// GET ALL RESERVATIONS — admin uniquement
+const getAllReservations = async (req, res) => {
+  try {
+    const reservations = await reservationModel.getAllReservations();
+    res.json(reservations);
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Erreur serveur");
+  }
+};
+
 module.exports = {
   reserveProduct,
   cancelReservation,
   getMyReservations,
+  getAllReservations,
 };
